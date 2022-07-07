@@ -18,8 +18,8 @@ df = pd.read_csv(data_url)
 comparisons = [
     "WT Fracture vs WT Control",
     "DTR Fracture vs WT Fracture",
-    "WT Fracture vs WT Control",
-    "WT Fracture vs WT Control",
+    "DTR Fracture vs DTR Control",
+    "DTR Control vs WT Control",
 ]
 
 # Input boxes
