@@ -12,8 +12,14 @@ import streamlit as st
 Introduction to project
 """
 
-data_url = "https://raw.githubusercontent.com/brendanhasz/test_expression_website/main/data/data.csv"
-df = pd.read_csv(data_url)
+@st.experimental_singleton
+def get_data():
+    """Load the data, and cache it."""
+    return pd.read_csv(
+        "https://raw.githubusercontent.com/brendanhasz/test_expression_website/main/data/data.csv"
+    )
+
+df = get_data()
 
 comparisons = [
     "WT Fracture vs WT Control",
