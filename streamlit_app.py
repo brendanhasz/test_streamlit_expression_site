@@ -54,3 +54,15 @@ fig.add_trace(go.Bar(
 ))
 fig.update_layout(barmode='group')
 st.plotly_chart(fig, use_container_width=True)
+
+# Log fold change
+fold_change_map = {
+    "WT Fracture vs WT Control": "LogFC WT Fx vs WT Ctrl",
+    "DTR Fracture vs WT Fracture": "LogFC DTR Fx vs WT FX",
+    "DTR Fracture vs DTR Control": "LogFC DTR Fx vs DTR Ctrl",
+    "DTR Control vs WT Control": "LogFC DTR Ctrl vs WT Ctrl",
+}
+st.write(
+    "Log2 of Transcript Count Fold Change: "
+    f"*{gene_data[fold_change_map[comparison_select]]}*"
+)
