@@ -32,17 +32,19 @@ with st.container():
     with col3:
         gender_select = st.selectbox(label="Gender:", options=["Male", "Female"])
 
+# Data for selected gene
+gene_data = df[df["Gene Symbol"] == gene_select].iloc[0, :]
+
+# Get columns to plot
+col1, col2 = comparison_select.split(" vs ")
+
 # Bar chart
 fig = go.Figure()
 fig.add_trace(go.Bar(
-    name='Control',
-    x=['Trial 1', 'Trial 2', 'Trial 3'], y=[3, 6, 4],
-    error_y=dict(type='data', array=[1, 0.5, 1.5])
-))
-fig.add_trace(go.Bar(
-    name='Experimental',
-    x=['Trial 1', 'Trial 2', 'Trial 3'], y=[4, 7, 3],
-    error_y=dict(type='data', array=[0.5, 1, 2])
+    name="Male",
+    x=[col1, col2],
+    y=[gene_data[col1], gene_data[col2]], 
+    error_y=dict(type='data', array=[gene_data["SEM "+col1], gene_data["SEM "+col2]])
 ))
 fig.update_layout(barmode='group')
 st.plotly_chart(fig, use_container_width=True)
