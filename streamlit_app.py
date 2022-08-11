@@ -12,14 +12,25 @@ import streamlit as st
 Introduction to project
 """
 
+
 @st.experimental_singleton
-def get_data():
-    """Load the data, and cache it."""
+def get_data_male():
+    """Load the male data, and cache it."""
     return pd.read_csv(
-        "https://raw.githubusercontent.com/brendanhasz/test_expression_website/main/data/data.csv"
+        "https://raw.githubusercontent.com/brendanhasz/test_streamlit_expression_site/main/data/deseq2_male.csv"
     )
 
-df = get_data()
+
+@st.experimental_singleton
+def get_data_female():
+    """Load the female data, and cache it."""
+    return pd.read_csv(
+        "https://raw.githubusercontent.com/brendanhasz/test_streamlit_expression_site/main/data/deseq2_female.csv"
+    )
+
+
+df_male = get_data_male()
+df_female = get_data_female()
 
 comparisons = [
     "WT Fracture vs WT Control",
@@ -30,28 +41,37 @@ comparisons = [
 
 # Input boxes
 with st.container():
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     with col1:
         gene_select = st.selectbox(label="Select a gene:", options=df["Gene Symbol"])
     with col2:
         comparison_select = st.selectbox(label="Comparison:", options=comparisons)
-    with col3:
-        gender_select = st.selectbox(label="Gender:", options=["Male", "Female"])
 
 # Data for selected gene
-gene_data = df[df["Gene Symbol"] == gene_select].iloc[0, :]
+gene_data_male = df_male[df_male["Gene Symbol"] == gene_select].iloc[0, :]
+gene_data_female = df_female[df_female["Gene Symbol"] == gene_select].iloc[0, :]
 
 # Get columns to plot
 col1, col2 = comparison_select.split(" vs ")
 
 # Bar chart
 fig = go.Figure()
-fig.add_trace(go.Bar(
-    name="Male",
-    x=[col1, col2],
-    y=[gene_data[col1], gene_data[col2]], 
-    error_y=dict(type='data', array=[gene_data["SEM "+col1], gene_data["SEM "+col2]])
-))
+fig.add_trace(
+    go.Bar(
+        name=col1,
+        x=["Male", "Female"],
+        y=[gene_data_male[col1], gene_data_female[col1]], 
+        error_y=dict(type='data', array=[gene_data_male["SEM "+col1], gene_data_female["SEM "+col1]])
+    )
+)
+fig.add_trace(
+    go.Bar(
+        name=col2,
+        x=["Male", "Female"],
+        y=[gene_data_male[col2], gene_data_female[col2]], 
+        error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
+    )
+)
 fig.update_layout(barmode='group')
 st.plotly_chart(fig, use_container_width=True)
 
@@ -62,7 +82,6 @@ fold_change_map = {
     "DTR Fracture vs DTR Control": "LogFC DTR Fx vs DTR Ctrl",
     "DTR Control vs WT Control": "LogFC DTR Ctrl vs WT Ctrl",
 }
-st.write(
-    "Log2 of Transcript Count Fold Change: "
-    f"*{gene_data[fold_change_map[comparison_select]]}*"
-)
+st.write("Log2 of Transcript Count Fold Change:")
+st.write(f"Male: *{gene_data_male[fold_change_map[comparison_select]]}*")
+st.write(f"Female: *{gene_data_male[fold_change_map[comparison_select]]}*")
