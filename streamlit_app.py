@@ -84,4 +84,4 @@ fold_change_map = {
 }
 st.write("Log2 of Transcript Count Fold Change:")
 st.write(f"Male: *{gene_data_male[fold_change_map[comparison_select]]}*")
-st.write(f"Female: *{gene_data_male[fold_change_map[comparison_select]]}*")
+st.write(f"Female: *{gene_data_female[fold_change_map[comparison_select]]}*")
