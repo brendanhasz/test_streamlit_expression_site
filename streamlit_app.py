@@ -43,7 +43,7 @@ comparisons = [
 with st.container():
     col1, col2 = st.columns(2)
     with col1:
-        gene_select = st.selectbox(label="Select a gene:", options=df["Gene Symbol"])
+        gene_select = st.selectbox(label="Select a gene:", options=df_male["Gene Symbol"])
     with col2:
         comparison_select = st.selectbox(label="Comparison:", options=comparisons)
 
