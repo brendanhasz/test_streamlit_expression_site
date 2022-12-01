@@ -85,3 +85,14 @@ fold_change_map = {
 st.write("Log2 of Transcript Count Fold Change:")
 st.write(f"Male: *{gene_data_male[fold_change_map[comparison_select]]}*")
 st.write(f"Female: *{gene_data_female[fold_change_map[comparison_select]]}*")
+
+# P-values
+pvalue_map = {
+    "WT Fracture vs WT Control": "Adj-p WT Fx vs WT Ctrl",
+    "DTR Fracture vs WT Fracture": "Adj-p DTR Fx vs WT FX",
+    "DTR Fracture vs DTR Control": "Adj-p DTR Fx vs DTR Ctrl",
+    "DTR Control vs WT Control": "Adj-p DTR Ctrl vs WT Ctrl",
+}
+st.write("P values:")
+st.write(f"Male: p=*{gene_data_male[pvalue_map[comparison_select]]}*")
+st.write(f"Female: p=*{gene_data_female[pvalue_map[comparison_select]]}*")
