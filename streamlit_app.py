@@ -75,6 +75,8 @@ fig.add_trace(
 fig.update_layout(barmode='group')
 st.plotly_chart(fig, use_container_width=True)
 
+col1, col2 = st.columns(2)
+
 # Log fold change
 fold_change_map = {
     "WT Fracture vs WT Control": "LogFC WT Fx vs WT Ctrl",
@@ -82,9 +84,10 @@ fold_change_map = {
     "DTR Fracture vs DTR Control": "LogFC DTR Fx vs DTR Ctrl",
     "DTR Control vs WT Control": "LogFC DTR Ctrl vs WT Ctrl",
 }
-st.write("Log2 of Transcript Count Fold Change:")
-st.write(f"Male: *{gene_data_male[fold_change_map[comparison_select]]}*")
-st.write(f"Female: *{gene_data_female[fold_change_map[comparison_select]]}*")
+with col1:
+    st.write("Log2 of Transcript Count Fold Change:")
+    st.write(f"Male: *{gene_data_male[fold_change_map[comparison_select]]}*")
+    st.write(f"Female: *{gene_data_female[fold_change_map[comparison_select]]}*")
 
 # P-values
 pvalue_map = {
@@ -93,6 +96,7 @@ pvalue_map = {
     "DTR Fracture vs DTR Control": "Adj-p DTR Fx vs DTR Ctrl",
     "DTR Control vs WT Control": "Adj-p DTR Ctrl vs WT Ctrl",
 }
-st.write("P values:")
-st.write(f"Male: p=*{gene_data_male[pvalue_map[comparison_select]]}*")
-st.write(f"Female: p=*{gene_data_female[pvalue_map[comparison_select]]}*")
+with col2:
+    st.write("P values:")
+    st.write(f"Male: p=*{gene_data_male[pvalue_map[comparison_select]]}*")
+    st.write(f"Female: p=*{gene_data_female[pvalue_map[comparison_select]]}*")
