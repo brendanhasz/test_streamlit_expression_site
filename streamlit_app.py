@@ -72,7 +72,11 @@ fig.add_trace(
         error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
     )
 )
-fig.update_layout(barmode='group')
+fig.update_layout(
+    barmode='group',
+    yaxis_title="TODO: y axis label",
+    font=dict(size=12),
+)
 st.plotly_chart(fig, use_container_width=True)
 
 col1, col2 = st.columns(2)
