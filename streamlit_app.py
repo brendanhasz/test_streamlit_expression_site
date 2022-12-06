@@ -37,10 +37,10 @@ df_male = get_data_male()
 df_female = get_data_female()
 
 comparisons = [
-    "WT Fracture vs WT Control",
-    "DTR Fracture vs WT Fracture",
-    "DTR Fracture vs DTR Control",
-    "DTR Control vs WT Control",
+    "Injured-Resident vs Uninjured-Resident",
+    "Injured-Repopulated vs Injured-Resident",
+    "Injured-Repopulated vs Uninjured-Repopulated",
+    "Uninjured-Repopulated vs Uninjured-Resident",
 ]
 
 # Input boxes
@@ -60,15 +60,8 @@ col1, col2 = comparison_select.split(" vs ")
 
 # P-values
 p_value_threshold = 0.05
-pvalue_map = {
-    "WT Fracture vs WT Control": "Adj-p WT Fx vs WT Ctrl",
-    "DTR Fracture vs WT Fracture": "Adj-p DTR Fx vs WT FX",
-    "DTR Fracture vs DTR Control": "Adj-p DTR Fx vs DTR Ctrl",
-    "DTR Control vs WT Control": "Adj-p DTR Ctrl vs WT Ctrl",
-}
-male_p_value = gene_data_male[pvalue_map[comparison_select]]
-female_p_value = gene_data_female[pvalue_map[comparison_select]]
-
+male_p_value = gene_data_male["Adj-p " + comparison_select]
+female_p_value = gene_data_female["Adj-p " + comparison_select]
 
 # Bar chart
 fig = go.Figure()
@@ -154,16 +147,10 @@ st.plotly_chart(fig, use_container_width=True)
 col1, col2 = st.columns(2)
 
 # Log fold change
-fold_change_map = {
-    "WT Fracture vs WT Control": "LogFC WT Fx vs WT Ctrl",
-    "DTR Fracture vs WT Fracture": "LogFC DTR Fx vs WT FX",
-    "DTR Fracture vs DTR Control": "LogFC DTR Fx vs DTR Ctrl",
-    "DTR Control vs WT Control": "LogFC DTR Ctrl vs WT Ctrl",
-}
 with col1:
     st.write("Log2 of Transcript Count Fold Change:")
-    st.write(f"Male: *{gene_data_male[fold_change_map[comparison_select]]}*")
-    st.write(f"Female: *{gene_data_female[fold_change_map[comparison_select]]}*")
+    st.write(f"Male: *{gene_data_male['LogFC ' + comparison_select]}*")
+    st.write(f"Female: *{gene_data_female['LogFC ' + comparison_select]}*")
 
 # P-values
 with col2:
