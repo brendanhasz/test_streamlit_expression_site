@@ -103,6 +103,16 @@ if male_p_value < p_value_threshold:
             marker_size=10,
         )
     )
+else:
+    fig.add_annotation(
+        text="n.s.",
+        x="Male",
+        y=star_y,
+        showarrow=False,
+        align="center",
+        xanchor="center",
+        font=dict(size=11, color="black"),
+    )
 if female_p_value < p_value_threshold:
     fig.add_trace(
         go.Scatter(
@@ -116,6 +126,16 @@ if female_p_value < p_value_threshold:
             marker_line_width=1,
             marker_size=10,
         )
+    )
+else:
+    fig.add_annotation(
+        text="n.s.",
+        x="Female",
+        y=star_y,
+        showarrow=False,
+        align="center",
+        xanchor="center",
+        font=dict(size=11, color="black"),
     )
 fig.update_layout(
     barmode='group',
