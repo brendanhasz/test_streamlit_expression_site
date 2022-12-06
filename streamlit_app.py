@@ -142,6 +142,7 @@ else:
     )
 fig.update_layout(
     barmode='group',
+    title_text=gene_select,
     yaxis_title="Normalized Transcript Counts",
     font=dict(size=12),
 )
