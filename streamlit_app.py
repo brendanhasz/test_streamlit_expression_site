@@ -56,7 +56,7 @@ gene_data_female = df_female[df_female["Gene Symbol"] == gene_select].iloc[0, :]
 col1, col2 = comparison_select.split(" vs ")
 
 # P-values
-p_value_threshold = 0.6
+p_value_threshold = 0.05
 pvalue_map = {
     "WT Fracture vs WT Control": "Adj-p WT Fx vs WT Ctrl",
     "DTR Fracture vs WT Fracture": "Adj-p DTR Fx vs WT FX",
@@ -107,7 +107,7 @@ if female_p_value < p_value_threshold:
     fig.add_trace(
         go.Scatter(
             name=f"F p={male_p_value}",
-            x=["Feale"],
+            x=["Female"],
             y=[star_y],
             mode="markers",  # or "lines"
             marker_symbol="asterisk",  # or "star"
