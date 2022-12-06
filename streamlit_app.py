@@ -8,9 +8,12 @@ import streamlit as st
 
 
 """
-# Page title
+# Repopulated microglia exhibit a unique transcriptome and contribute to sex-independent pain resolution
 
-Introduction to project
+This data originates from a study in a mouse model of Complex Regional Pain Syndrome that showed microglial
+depletion after injury attenuates pain and improves peripheral symtoms. Lumbar spinal cord microglia were
+FACS-Isolated and RNA-Sequenced to study the transcriptome of the repopulating microglia. Sequencing data was
+analyzed using [Deseq2](https://doi.org/doi:10.18129/B9.bioc.DESeq2).
 """
 
 
@@ -71,18 +74,18 @@ female_p_value = gene_data_female[pvalue_map[comparison_select]]
 fig = go.Figure()
 fig.add_trace(
     go.Bar(
-        name=col1,
-        x=["Male", "Female"],
-        y=[gene_data_male[col1], gene_data_female[col1]], 
-        error_y=dict(type='data', array=[gene_data_male["SEM "+col1], gene_data_female["SEM "+col1]])
-    )
-)
-fig.add_trace(
-    go.Bar(
         name=col2,
         x=["Male", "Female"],
         y=[gene_data_male[col2], gene_data_female[col2]], 
         error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
+    )
+)
+fig.add_trace(
+    go.Bar(
+        name=col1,
+        x=["Male", "Female"],
+        y=[gene_data_male[col1], gene_data_female[col1]], 
+        error_y=dict(type='data', array=[gene_data_male["SEM "+col1], gene_data_female["SEM "+col1]])
     )
 )
 star_y = 1.05 * (
@@ -139,7 +142,7 @@ else:
     )
 fig.update_layout(
     barmode='group',
-    yaxis_title="TODO: y axis label",
+    yaxis_title="Normalized Transcript Counts",
     font=dict(size=12),
 )
 for trace in fig['data']: 
