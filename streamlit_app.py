@@ -84,10 +84,10 @@ fig.add_trace(
         error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
     )
 )
-val1 = gene_data_male[col1]
-val2 = gene_data_female[col1]
-val3 = gene_data_male[col2]
-val4 = gene_data_female[col2]
+val1 = float(gene_data_male[col1])
+val2 = float(gene_data_female[col1])
+val3 = float(gene_data_male[col2])
+val4 = float(gene_data_female[col2])
 st.write(val1)
 st.write(val2)
 st.write(val3)
