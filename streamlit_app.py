@@ -72,6 +72,13 @@ fig.add_trace(
         error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
     )
 )
+fig.add_trace(
+    go.Scatter(
+        x=[0, 1.0, 2.0],
+        y=[0.0, 1000.0, 2000.0],
+        mode="markers",  # or "lines"
+    )
+)
 fig.update_layout(
     barmode='group',
     yaxis_title="TODO: y axis label",
