@@ -56,7 +56,7 @@ gene_data_female = df_female[df_female["Gene Symbol"] == gene_select].iloc[0, :]
 col1, col2 = comparison_select.split(" vs ")
 
 # P-values
-p_value_threshold = 0.05
+p_value_threshold = 0.6
 pvalue_map = {
     "WT Fracture vs WT Control": "Adj-p WT Fx vs WT Ctrl",
     "DTR Fracture vs WT Fracture": "Adj-p DTR Fx vs WT FX",
@@ -85,17 +85,10 @@ fig.add_trace(
         error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
     )
 )
-val1 = float(gene_data_male[col1])
-val2 = float(gene_data_female[col1])
-val3 = float(gene_data_male[col2])
-val4 = float(gene_data_female[col2])
-st.write(val1)
-st.write(val2)
-st.write(val3)
-st.write(val4)
-max_val = np.max([val1, val2, val3, val4])
-max_sem = np.max([gene_data_male["SEM "+col1], gene_data_female["SEM "+col1], gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
-star_y = 1.05 * (max_val + max_sem)
+star_y = 1.05 * (
+    np.max([gene_data_male[col1], gene_data_female[col1], gene_data_male[col2], gene_data_female[col2]])
+    + np.max([gene_data_male["SEM "+col1], gene_data_female["SEM "+col1], gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
+)
 if male_p_value < p_value_threshold:
     fig.add_trace(
         go.Scatter(
