@@ -61,7 +61,7 @@ col1, col2 = comparison_select.split(" vs ")
 # P-values
 p_value_threshold = 0.05
 st.write(comparison_select)
-st.write(gene_data_male.columns)
+st.write(gene_data_male)
 male_p_value = gene_data_male["Adj-p " + comparison_select]
 female_p_value = gene_data_female["Adj-p " + comparison_select]
 
