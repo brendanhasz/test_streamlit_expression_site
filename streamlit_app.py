@@ -60,9 +60,18 @@ overlapping_transcript_ids = set(all_gene_data_male["Transcript ID"]).union(set(
 all_gene_data_male = all_gene_data_male[all_gene_data_male.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
 all_gene_data_female = all_gene_data_female[all_gene_data_female.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
 
-# Sort by p-value
-all_gene_data_male.sort_values("Adj-p Injured-Repopulated vs Injured-Resident", inplace=True)
-all_gene_data_female.sort_values("Adj-p Injured-Repopulated vs Injured-Resident", inplace=True)
+# Get avg p value by transcript_id
+pvalue_col = "Adj-p " + comparison_select
+pvalues = pd.DataFrame()
+pvalues["Transcript ID"] = overlapping_transcript_ids
+pvalues = pvalues.join(all_gene_data_male[["Transcript ID", pvalue_col]], on="Transcript ID", rsuffix="_m")
+pvalues = pvalues.join(all_gene_data_female[["Transcript ID", pvalue_col]], on="Transcript ID", rsuffix="_f")
+pvalues["avg pvalue"] = (pvalues[pvalue_col+"_m"] + pvalues[pvalue_col+"_m"]) / 2
+pvalues.sort_values("avg pvalue", inplace=True)
+st.write(pvalues)
+sorted_transcript_ids = pvalues["Transcript ID"].tolist()
+st.write(sorted_transcript_ids)
+
 
 def plot_single_transcript(gene_data_male, gene_data_female, transcript_id):
     """Plot gene data for a single transcript."""
@@ -172,7 +181,7 @@ def plot_single_transcript(gene_data_male, gene_data_female, transcript_id):
 
 
 # Show a plot for each transcript with this gene symbol
-for transcript_id in all_gene_data_male["Transcript ID"]:
+for transcript_id, avg_pvalue in all_gene_data_male["Transcript ID"]:
     gene_data_male = all_gene_data_male.loc[all_gene_data_male["Transcript ID"] == transcript_id, :].iloc[0, :]
     gene_data_female = all_gene_data_female.loc[all_gene_data_female["Transcript ID"] == transcript_id, :].iloc[0, :]
     st.write(gene_data_male)  # TODO debuggging
