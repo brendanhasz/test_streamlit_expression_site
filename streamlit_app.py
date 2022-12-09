@@ -57,8 +57,8 @@ all_gene_data_female = df_female[df_female["Gene Symbol"] == gene_select]
 
 # Ensure we're only showing transcript ids which are present in both M and F datasets for this gene symbol
 overlapping_transcript_ids = set(all_gene_data_male["Transcript ID"]).union(set(all_gene_data_female["Transcript ID"]))
-all_gene_data_male = all_gene_data_male[all_gene_data_male.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
-all_gene_data_female = all_gene_data_female[all_gene_data_female.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
+#all_gene_data_male = all_gene_data_male[all_gene_data_male.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
+#all_gene_data_female = all_gene_data_female[all_gene_data_female.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
 
 # Get avg p value by transcript_id
 pvalue_col = "Adj-p " + comparison_select
