@@ -55,6 +55,15 @@ with st.container():
 all_gene_data_male = df_male[df_male["Gene Symbol"] == gene_select]
 all_gene_data_female = df_female[df_female["Gene Symbol"] == gene_select]
 
+# Ensure we're only showing transcript ids which are present in both M and F datasets for this gene symbol
+overlapping_transcript_ids = set(all_gene_data_male["Transcript ID"]).union(set(all_gene_data_female["Transcript ID"]))
+all_gene_data_male = all_gene_data_male[all_gene_data_male.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
+all_gene_data_female = all_gene_data_female[all_gene_data_female.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
+
+# Sort by p-value
+all_gene_data_male.sort_values("Adj-p Injured-Repopulated vs Injured-Resident", inplace=True)
+all_gene_data_female.sort_values("Adj-p Injured-Repopulated vs Injured-Resident", inplace=True)
+
 def plot_single_transcript(gene_data_male, gene_data_female, transcript_id):
     """Plot gene data for a single transcript."""
     
@@ -161,12 +170,13 @@ def plot_single_transcript(gene_data_male, gene_data_female, transcript_id):
         st.write(f"Male: p=*{male_p_value}*")
         st.write(f"Female: p=*{female_p_value}*")
 
-# Get transcript ids which are present in both M and F datasets for this gene symbol
-overlapping_transcript_ids = set(all_gene_data_male["Transcript ID"]).union(set(all_gene_data_female["Transcript ID"]))
 
-for transcript_id in overlapping_transcript_ids:
-    gene_data_male = all_gene_data_male[all_gene_data_male["Transcript ID"] == transcript_id].iloc[0, :]
-    gene_data_female = all_gene_data_female[all_gene_data_female["Transcript ID"] == transcript_id].iloc[0, :]
+# Show a plot for each transcript with this gene symbol
+for transcript_id in all_gene_data_male["Transcript ID"]:
+    gene_data_male = all_gene_data_male.loc[all_gene_data_male["Transcript ID"] == transcript_id, :].iloc[0, :]
+    gene_data_female = all_gene_data_female.loc[all_gene_data_female["Transcript ID"] == transcript_id, :].iloc[0, :]
+    st.write(gene_data_male)  # TODO debuggging
+    st.write(gene_data_female)  # TODO debuggging
     plot_single_transcript(
         transcript_id,
         gene_data_male,
