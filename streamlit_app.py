@@ -47,7 +47,7 @@ comparisons = [
 with st.container():
     col1, col2 = st.columns(2)
     with col1:
-        gene_select = st.selectbox(label="Select a gene:", options=df_male["Gene Symbol"])
+        gene_select = st.selectbox(label="Select a gene:", options=df_male["Gene Symbol"].unique())
     with col2:
         comparison_select = st.selectbox(label="Comparison:", options=comparisons)
 
@@ -178,8 +178,6 @@ def plot_single_transcript(transcript_id, gene_data_male, gene_data_female):
 for transcript_id in sorted_transcript_ids:
     gene_data_male = all_gene_data_male.loc[all_gene_data_male["Transcript ID"] == transcript_id, :].iloc[0, :]
     gene_data_female = all_gene_data_female.loc[all_gene_data_female["Transcript ID"] == transcript_id, :].iloc[0, :]
-    st.write(gene_data_male)  # TODO debuggging
-    st.write(gene_data_female)  # TODO debuggging
     plot_single_transcript(
         transcript_id,
         gene_data_male,
