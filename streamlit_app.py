@@ -67,7 +67,7 @@ pvalues.sort_values("avg pvalue", inplace=True)
 sorted_transcript_ids = pvalues["Transcript ID"].tolist()
 
 
-def plot_single_transcript(gene_data_male, gene_data_female, transcript_id):
+def plot_single_transcript(transcript_id, gene_data_male, gene_data_female):
     """Plot gene data for a single transcript."""
     
     # Get columns to plot
