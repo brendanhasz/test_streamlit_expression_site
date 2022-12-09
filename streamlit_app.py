@@ -74,7 +74,7 @@ pvalues = pvalues.merge(all_gene_data_male[["Transcript ID", pvalue_col]], on="T
 st.write(pvalues)  # TODO debugging
 pvalues = pvalues.merge(all_gene_data_female[["Transcript ID", pvalue_col]], on="Transcript ID")
 st.write(pvalues)  # TODO debugging
-pvalues["avg pvalue"] = (pvalues[pvalue_col] + pvalues[pvalue_col+"_y"]) / 2
+pvalues["avg pvalue"] = (pvalues[pvalue_col+"_x"] + pvalues[pvalue_col+"_y"]) / 2
 pvalues.sort_values("avg pvalue", inplace=True)
 st.write(pvalues)
 sorted_transcript_ids = pvalues["Transcript ID"].tolist()
