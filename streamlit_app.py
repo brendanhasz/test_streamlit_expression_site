@@ -52,108 +52,125 @@ with st.container():
         comparison_select = st.selectbox(label="Comparison:", options=comparisons)
 
 # Data for selected gene
-gene_data_male = df_male[df_male["Gene Symbol"] == gene_select].iloc[0, :]
-gene_data_female = df_female[df_female["Gene Symbol"] == gene_select].iloc[0, :]
+all_gene_data_male = df_male[df_male["Gene Symbol"] == gene_select]
+all_gene_data_female = df_female[df_female["Gene Symbol"] == gene_select]
 
-# Get columns to plot
-col1, col2 = comparison_select.split(" vs ")
+def plot_single_transcript(gene_data_male, gene_data_female, transcript_id):
+    """Plot gene data for a single transcript."""
+    
+    # Get columns to plot
+    col1, col2 = comparison_select.split(" vs ")
 
-# P-values
-p_value_threshold = 0.05
-male_p_value = gene_data_male["Adj-p " + comparison_select]
-female_p_value = gene_data_female["Adj-p " + comparison_select]
+    # P-values
+    p_value_threshold = 0.05
+    male_p_value = gene_data_male["Adj-p " + comparison_select]
+    female_p_value = gene_data_female["Adj-p " + comparison_select]
 
-# Bar chart
-fig = go.Figure()
-fig.add_trace(
-    go.Bar(
-        name=col2,
-        x=["Male", "Female"],
-        y=[gene_data_male[col2], gene_data_female[col2]], 
-        error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
-    )
-)
-fig.add_trace(
-    go.Bar(
-        name=col1,
-        x=["Male", "Female"],
-        y=[gene_data_male[col1], gene_data_female[col1]], 
-        error_y=dict(type='data', array=[gene_data_male["SEM "+col1], gene_data_female["SEM "+col1]])
-    )
-)
-star_y = 1.05 * (
-    np.max([gene_data_male[col1], gene_data_female[col1], gene_data_male[col2], gene_data_female[col2]])
-    + np.max([gene_data_male["SEM "+col1], gene_data_female["SEM "+col1], gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
-)
-if male_p_value < p_value_threshold:
+    # Bar chart
+    fig = go.Figure()
     fig.add_trace(
-        go.Scatter(
-            name=f"M p={male_p_value}",
-            x=["Male"],
-            y=[star_y],
-            mode="markers",  # or "lines"
-            marker_symbol="asterisk",  # or "star"
-            marker_line_color="black",
-            marker_color="black",
-            marker_line_width=1,
-            marker_size=10,
+        go.Bar(
+            name=col2,
+            x=["Male", "Female"],
+            y=[gene_data_male[col2], gene_data_female[col2]], 
+            error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
         )
     )
-else:
-    fig.add_annotation(
-        text="n.s.",
-        x="Male",
-        y=star_y,
-        showarrow=False,
-        align="center",
-        xanchor="center",
-        font=dict(size=11, color="black"),
-    )
-if female_p_value < p_value_threshold:
     fig.add_trace(
-        go.Scatter(
-            name=f"F p={male_p_value}",
-            x=["Female"],
-            y=[star_y],
-            mode="markers",  # or "lines"
-            marker_symbol="asterisk",  # or "star"
-            marker_line_color="black",
-            marker_color="black",
-            marker_line_width=1,
-            marker_size=10,
+        go.Bar(
+            name=col1,
+            x=["Male", "Female"],
+            y=[gene_data_male[col1], gene_data_female[col1]], 
+            error_y=dict(type='data', array=[gene_data_male["SEM "+col1], gene_data_female["SEM "+col1]])
         )
     )
-else:
-    fig.add_annotation(
-        text="n.s.",
-        x="Female",
-        y=star_y,
-        showarrow=False,
-        align="center",
-        xanchor="center",
-        font=dict(size=11, color="black"),
+    star_y = 1.05 * (
+        np.max([gene_data_male[col1], gene_data_female[col1], gene_data_male[col2], gene_data_female[col2]])
+        + np.max([gene_data_male["SEM "+col1], gene_data_female["SEM "+col1], gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
     )
-fig.update_layout(
-    barmode='group',
-    title_text=gene_select,
-    yaxis_title="Normalized Transcript Counts",
-    font=dict(size=12),
-)
-for trace in fig['data']: 
-    if(trace['name'] not in [col1, col2]):
-        trace['showlegend'] = False
-st.plotly_chart(fig, use_container_width=True)
+    if male_p_value < p_value_threshold:
+        fig.add_trace(
+            go.Scatter(
+                name=f"M p={male_p_value}",
+                x=["Male"],
+                y=[star_y],
+                mode="markers",  # or "lines"
+                marker_symbol="asterisk",  # or "star"
+                marker_line_color="black",
+                marker_color="black",
+                marker_line_width=1,
+                marker_size=10,
+            )
+        )
+    else:
+        fig.add_annotation(
+            text="n.s.",
+            x="Male",
+            y=star_y,
+            showarrow=False,
+            align="center",
+            xanchor="center",
+            font=dict(size=11, color="black"),
+        )
+    if female_p_value < p_value_threshold:
+        fig.add_trace(
+            go.Scatter(
+                name=f"F p={male_p_value}",
+                x=["Female"],
+                y=[star_y],
+                mode="markers",  # or "lines"
+                marker_symbol="asterisk",  # or "star"
+                marker_line_color="black",
+                marker_color="black",
+                marker_line_width=1,
+                marker_size=10,
+            )
+        )
+    else:
+        fig.add_annotation(
+            text="n.s.",
+            x="Female",
+            y=star_y,
+            showarrow=False,
+            align="center",
+            xanchor="center",
+            font=dict(size=11, color="black"),
+        )
+    fig.update_layout(
+        barmode='group',
+        title_text=f"{gene_select} ({transcript_id})",
+        yaxis_title="Normalized Transcript Counts",
+        font=dict(size=12),
+    )
+    for trace in fig['data']: 
+        if(trace['name'] not in [col1, col2]):
+            trace['showlegend'] = False
+    st.plotly_chart(fig, use_container_width=True)
 
-col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-# Log fold change
-with col1:
-    st.write("Log2 of Transcript Count Fold Change:")
-    st.write(f"Male: *{gene_data_male['LogFC ' + comparison_select]}*")
-    st.write(f"Female: *{gene_data_female['LogFC ' + comparison_select]}*")
+    # Log fold change
+    with col1:
+        st.write("Log2 of Transcript Count Fold Change:")
+        st.write(f"Male: *{gene_data_male['LogFC ' + comparison_select]}*")
+        st.write(f"Female: *{gene_data_female['LogFC ' + comparison_select]}*")
 
-# P-values
-with col2:
-    st.write("P values:")
-    st.write(f"Male: p=*{male_p_value}*")
-    st.write(f"Female: p=*{female_p_value}*")
+    # P-values
+    with col2:
+        st.write("P values:")
+        st.write(f"Male: p=*{male_p_value}*")
+        st.write(f"Female: p=*{female_p_value}*")
+
+# Get transcript ids which are present in both M and F datasets for this gene symbol
+overlapping_transcript_ids = set(all_gene_data_male["Transcript ID"]).union(set(all_gene_data_female["Transcript ID"]))
+
+for transcript_id in overlapping_transcript_ids:
+    gene_data_male = all_gene_data_male[all_gene_data_male["Transcript ID"] == transcript_id].iloc[0, :]
+    gene_data_female = all_gene_data_female[all_gene_data_female["Transcript ID"] == transcript_id].iloc[0, :]
+    plot_single_transcript(
+        transcript_id,
+        gene_data_male,
+        gene_data_female,
+    )
+    if len(overlapping_transcript_ids) > 1:
+        st.markdown("""---""")
