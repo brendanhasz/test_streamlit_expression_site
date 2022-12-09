@@ -70,8 +70,8 @@ st.write(pvalues["Transcript ID"].dtype)  # TODO debugging
 st.write(all_gene_data_male["Transcript ID"].dtype)  # TODO debugging
 st.write(type(pvalues))  # TODO debugging
 st.write(type(all_gene_data_male))  # TODO debugging
-pvalues = pvalues.merge(all_gene_data_male[["Transcript ID", pvalue_col]], on="Transcript ID", rsuffix="_m", how="left")
-pvalues = pvalues.merge(all_gene_data_female[["Transcript ID", pvalue_col]], on="Transcript ID", rsuffix="_f", how="left")
+pvalues = pvalues.merge(all_gene_data_male[["Transcript ID", pvalue_col]], on="Transcript ID", suffixes=('_x', '_m'))
+pvalues = pvalues.merge(all_gene_data_female[["Transcript ID", pvalue_col]], on="Transcript ID", suffixes=('_x', '_f'))
 pvalues["avg pvalue"] = (pvalues[pvalue_col+"_m"] + pvalues[pvalue_col+"_m"]) / 2
 pvalues.sort_values("avg pvalue", inplace=True)
 st.write(pvalues)
