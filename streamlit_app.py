@@ -55,30 +55,16 @@ with st.container():
 all_gene_data_male = df_male[df_male["Gene Symbol"] == gene_select]
 all_gene_data_female = df_female[df_female["Gene Symbol"] == gene_select]
 
-# Ensure we're only showing transcript ids which are present in both M and F datasets for this gene symbol
-overlapping_transcript_ids = set(all_gene_data_male["Transcript ID"]).union(set(all_gene_data_female["Transcript ID"]))
-#all_gene_data_male = all_gene_data_male[all_gene_data_male.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
-#all_gene_data_female = all_gene_data_female[all_gene_data_female.apply(lambda x: x["Transcript ID"] in overlapping_transcript_ids)]
-
 # Get avg p value by transcript_id
+overlapping_transcript_ids = set(all_gene_data_male["Transcript ID"]).union(set(all_gene_data_female["Transcript ID"]))
 pvalue_col = "Adj-p " + comparison_select
 pvalues = pd.DataFrame()
 pvalues["Transcript ID"] = list(overlapping_transcript_ids)
-st.write(pvalues)  # TODO debugging
-st.write(all_gene_data_male[["Transcript ID", pvalue_col]])  # TODO debugging
-st.write(pvalues["Transcript ID"].dtype)  # TODO debugging
-st.write(all_gene_data_male["Transcript ID"].dtype)  # TODO debugging
-st.write(type(pvalues))  # TODO debugging
-st.write(type(all_gene_data_male))  # TODO debugging
 pvalues = pvalues.merge(all_gene_data_male[["Transcript ID", pvalue_col]], on="Transcript ID")
-st.write(pvalues)  # TODO debugging
 pvalues = pvalues.merge(all_gene_data_female[["Transcript ID", pvalue_col]], on="Transcript ID")
-st.write(pvalues)  # TODO debugging
 pvalues["avg pvalue"] = (pvalues[pvalue_col+"_x"] + pvalues[pvalue_col+"_y"]) / 2
 pvalues.sort_values("avg pvalue", inplace=True)
-st.write(pvalues)
 sorted_transcript_ids = pvalues["Transcript ID"].tolist()
-st.write(sorted_transcript_ids)
 
 
 def plot_single_transcript(gene_data_male, gene_data_female, transcript_id):
@@ -189,7 +175,7 @@ def plot_single_transcript(gene_data_male, gene_data_female, transcript_id):
 
 
 # Show a plot for each transcript with this gene symbol
-for transcript_id, avg_pvalue in all_gene_data_male["Transcript ID"]:
+for transcript_id in sorted_transcript_ids:
     gene_data_male = all_gene_data_male.loc[all_gene_data_male["Transcript ID"] == transcript_id, :].iloc[0, :]
     gene_data_female = all_gene_data_female.loc[all_gene_data_female["Transcript ID"] == transcript_id, :].iloc[0, :]
     st.write(gene_data_male)  # TODO debuggging
