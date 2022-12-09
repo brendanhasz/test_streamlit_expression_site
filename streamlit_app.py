@@ -64,6 +64,8 @@ overlapping_transcript_ids = set(all_gene_data_male["Transcript ID"]).union(set(
 pvalue_col = "Adj-p " + comparison_select
 pvalues = pd.DataFrame()
 pvalues["Transcript ID"] = list(overlapping_transcript_ids)
+st.write(pvalues)  # TODO debugging
+st.write(all_gene_data_male[["Transcript ID", pvalue_col]])  # TODO debugging
 pvalues = pvalues.join(all_gene_data_male[["Transcript ID", pvalue_col]], on="Transcript ID", rsuffix="_m")
 pvalues = pvalues.join(all_gene_data_female[["Transcript ID", pvalue_col]], on="Transcript ID", rsuffix="_f")
 pvalues["avg pvalue"] = (pvalues[pvalue_col+"_m"] + pvalues[pvalue_col+"_m"]) / 2
