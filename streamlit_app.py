@@ -8,12 +8,22 @@ import streamlit as st
 
 
 """
-# Repopulated microglia exhibit a unique transcriptome and contribute to sex-independent pain resolution
+# Newly repopulated spinal cord microglia exhibit a unique transcriptome and coincide with sex-independent pain resolution
 
-This data originates from a study in a mouse model of Complex Regional Pain Syndrome that showed microglial
-depletion after injury attenuates pain and improves peripheral symtoms. Lumbar spinal cord microglia were
-FACS-Isolated and RNA-Sequenced to study the transcriptome of the repopulating microglia. Sequencing data was
-analyzed using [Deseq2](https://doi.org/doi:10.18129/B9.bioc.DESeq2).
+These data originate from a study in the tibial fracture/casting mouse model of Complex Regional Pain Syndrome (CRPS) 
+which showed microglial depletion (using the Cx3CR1-creER;iDTR-LSL transgenic mouse) after injury attenuates pain and
+improves peripheral symptoms (hind paw edema and warmth). Lumbar spinal cord microglia were FACS-Isolated
+(CD45mid CD11+ CX3CR1+) and RNA-Sequenced to study the transcriptome of resident and repopulating microglia.
+Sequencing data were analyzed using Deseq2.
+
+The following groups were analyzed and compared:
+
+* Uninjured-Resident = microglia isolated from uninjured mice with resident microglia
+* Injured-Resident = microglia isolated from mice 5 weeks after tibial fracture/casting with resident microglia
+* Uninjured-Repopulated = microglia isolated from uninjured mice with repopulated microglia (2 weeks after depletion/repopulation)
+* Injured-Repopulated = microglia isolated from mice 5 weeks after tibial fracture/casting with repopulated microglia (2 weeks after depletion/repopulation)
+
+[https://www.biorxiv.org/content/10.1101/2022.12.20.521295v1](https://www.biorxiv.org/content/10.1101/2022.12.20.521295v1)
 """
 
 
@@ -72,6 +82,8 @@ def plot_single_transcript(transcript_id, gene_data_male, gene_data_female):
     
     # Get columns to plot
     col1, col2 = comparison_select.split(" vs ")
+    col1_full = f"FC {comparison_select}: {col1}" 
+    col2_full = f"FC {comparison_select}: {col2}" 
 
     # P-values
     p_value_threshold = 0.05
@@ -84,22 +96,17 @@ def plot_single_transcript(transcript_id, gene_data_male, gene_data_female):
         go.Bar(
             name=col2,
             x=["Male", "Female"],
-            y=[gene_data_male[col2], gene_data_female[col2]], 
-            error_y=dict(type='data', array=[gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
+            y=[gene_data_male[col2_full], gene_data_female[col2_full]], 
         )
     )
     fig.add_trace(
         go.Bar(
             name=col1,
             x=["Male", "Female"],
-            y=[gene_data_male[col1], gene_data_female[col1]], 
-            error_y=dict(type='data', array=[gene_data_male["SEM "+col1], gene_data_female["SEM "+col1]])
+            y=[gene_data_male[col1_full], gene_data_female[col1_full]], 
         )
     )
-    star_y = 1.05 * (
-        np.max([gene_data_male[col1], gene_data_female[col1], gene_data_male[col2], gene_data_female[col2]])
-        + np.max([gene_data_male["SEM "+col1], gene_data_female["SEM "+col1], gene_data_male["SEM "+col2], gene_data_female["SEM "+col2]])
-    )
+    star_y = 1.05 * np.max([gene_data_male[col1_full], gene_data_female[col1_full], gene_data_male[col2_full], gene_data_female[col2_full]])
     if male_p_value < p_value_threshold:
         fig.add_trace(
             go.Scatter(
@@ -151,7 +158,7 @@ def plot_single_transcript(transcript_id, gene_data_male, gene_data_female):
     fig.update_layout(
         barmode='group',
         title_text=f"{gene_select} ({transcript_id})",
-        yaxis_title="Normalized Transcript Counts",
+        yaxis_title="Transcript Count Fold Change",
         font=dict(size=12),
     )
     for trace in fig['data']: 
@@ -159,19 +166,10 @@ def plot_single_transcript(transcript_id, gene_data_male, gene_data_female):
             trace['showlegend'] = False
     st.plotly_chart(fig, use_container_width=True)
 
-    col1, col2 = st.columns(2)
-
-    # Log fold change
-    with col1:
-        st.write("Log2 of Transcript Count Fold Change:")
-        st.write(f"Male: *{gene_data_male['LogFC ' + comparison_select]}*")
-        st.write(f"Female: *{gene_data_female['LogFC ' + comparison_select]}*")
-
-    # P-values
-    with col2:
-        st.write("P values:")
-        st.write(f"Male: p=*{male_p_value}*")
-        st.write(f"Female: p=*{female_p_value}*")
+    # Show exact p-values
+    st.write("P values:")
+    st.write(f"Male: p=*{male_p_value}*")
+    st.write(f"Female: p=*{female_p_value}*")
 
 
 # Show a plot for each transcript with this gene symbol
